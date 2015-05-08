@@ -122,18 +122,20 @@ command :build do |c|
       end
     end
 
-    log "Adding WatchKit support files", "#{xcode}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/Library/Application Support/WatchKit/WK"
-    Dir.mktmpdir do |tmpdir|
-      # Make watchkit support directory
-      watchkit_support = File.join(tmpdir, "WatchKitSupport")
-      Dir.mkdir(watchkit_support)
+    if is_watchkit?(@app_path)
+      log "Adding WatchKit support files", "#{xcode}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/Library/Application Support/WatchKit/WK"
+      Dir.mktmpdir do |tmpdir|
+        # Make watchkit support directory
+        watchkit_support = File.join(tmpdir, "WatchKitSupport")
+        Dir.mkdir(watchkit_support)
 
-      # Copy WK from Xcode into WatchKitSupport
-      FileUtils.copy_file("#{xcode}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/Library/Application Support/WatchKit/WK", File.join(watchkit_support, "WK"))
+        # Copy WK from Xcode into WatchKitSupport
+        FileUtils.copy_file("#{xcode}/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/Library/Application Support/WatchKit/WK", File.join(watchkit_support, "WK"))
 
-      # Add "WatchKitSupport" to the .ipa archive
-      Dir.chdir(tmpdir) do
-        abort unless system %{zip --recurse-paths "#{@ipa_path}" "WatchKitSupport" #{'> /dev/null' unless $verbose}}
+        # Add "WatchKitSupport" to the .ipa archive
+        Dir.chdir(tmpdir) do
+          abort unless system %{zip --recurse-paths "#{@ipa_path}" "WatchKitSupport" #{'> /dev/null' unless $verbose}}
+        end
       end
     end
 
@@ -145,6 +147,17 @@ command :build do |c|
   end
 
   private
+
+  def is_watchkit?(path)
+    Dir["#{path}/**/*.plist"].each do |current|
+      # `2>&1` to hide the error if it's not there: http://stackoverflow.com/a/4783536/445598
+      watchkit_enabled = `/usr/libexec/PlistBuddy -c 'Print WKWatchKitApp' '#{current}' 2>&1`.strip
+      if watchkit_enabled == 'true'
+        return true
+      end
+    end
+    false
+  end
 
   def validate_xcode_version!
     version = Shenzhen::XcodeBuild.version
