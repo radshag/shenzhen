@@ -1,5 +1,7 @@
 ![Shenzhen](https://raw.github.com/nomad/nomad.github.io/assets/shenzhen-banner.png)
 
+## This is a fork from [nomad shenzhen](https://github.com/nomad/shenzhen) which fixes issues with the Apple Watch.
+
 Create `.ipa` files and distribute them from the command line, using any of the following methods:
 
 - [iTunes Connect](https://itunesconnect.apple.com)
