@@ -23,7 +23,7 @@ Less cumbersome than clicking around in Xcode, and less hassle than rolling your
 ## Installation
 
 ```
-$ gem install shenzhen
+$ gem install krausefx-shenzhen
 ```
 
 ### JSON Build Error
