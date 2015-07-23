@@ -73,7 +73,7 @@ command :build do |c|
 
     actions = []
     actions << :clean unless options.clean == false
-    actions << :build unless options.archive == true
+    actions << :build
     actions << :archive unless options.archive == false
 
     ENV['CC'] = nil # Fix for RVM
