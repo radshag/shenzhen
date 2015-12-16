@@ -4,7 +4,7 @@ module Shenzhen::Plugins
   module S3
     class Client
       def initialize(access_key_id, secret_access_key, region)
-        @s3 = AWS::S3.new(:access_key_id => access_key_id,
+        @s3 = Aws::S3::Resource.new(:access_key_id => access_key_id,
           :secret_access_key => secret_access_key,
           :region => region)
       end
